@@ -1,31 +1,35 @@
 import React from 'react';
 import './Track.css';
-import {Playlist} from '../Playlist/Playlist.js';
+
 
 export class Track extends React.Component{
+    constructor(props){
+        super(props);
+        this.addTrack = this.addTrack.bind(this);
+    }
     renderAction(){
-        let isRemoval = true;
+        let isRemoval = this.props.isRemoval;
         if(isRemoval){
-            return '-';
+            return <button className="Track-action">-</button>;
         }
         else{
-            return '+';
+            return <button className="Track-action" onClick={this.addTrack}>+</button>;
         }
     }
     addTrack(){
-        <Playlist newTrack={this.props.track} />
-
+        const newTrack = this.props.track;
+        this.props.onAdd(newTrack);
     }
     render(){
         return(
             <div className="Track">
-            <div className="Track-information">
-                <h3>{this.props.track.name}</h3>
+                <div className="Track-information">
+                    <h3>{this.props.track.name}</h3>
 
-                <p>{this.props.track.artist} | {this.props.track.album}</p>
+                    <p>{this.props.track.artist} | {this.props.track.album}</p>
+                </div>
+                {this.renderAction}
             </div>
-            <button className="Track-action">{this.renderAction}</button>
-</div>
         );
     }
 }
