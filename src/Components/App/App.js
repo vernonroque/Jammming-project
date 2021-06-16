@@ -7,19 +7,26 @@ import {Playlist} from '../Playlist/Playlist.js';
 export class App extends React.Component{
   constructor(props){
     super(props);
-    this.state = {searchResults:[{name:''},{artist:''},{album:''},{id:''}],
+    this.state = {searchResults:[{name:'',artist:'',album:'',id:''}],
                   playlistName:'',
-                  playlistTracks:[{name:''},{artist:''},{album:''},{id:''}]
+                  playlistTracks:[{name:'',artist:'',album:'',id:''}]
                   };
     this.addTrack= this.addTrack.bind(this);
+    this.removeTrack=this.removeTrack.bind(this);
   }
   addTrack(track){
-    if(!this.state.playlistTracks.id.includes(track.id)){
+    if (this.state.playlistTracks.find(savedTrack => savedTrack.id===track.id)){
+        return;
+      }
       this.state.playlistTracks.push(track);
-      this.setState({playlistTracks:[{name:track.name},{artist:track.artist},{album:track.album},{id:track.id}]});
+      this.setState({playlistTracks:this.state.playlistTracks});
+    }
+    removeTrack(track){
+      const updatedList= this.state.playlistTracks.filter(savedTrack=> savedTrack.id!==track.id);
+        this.setState({playlistTracks:updatedList})
     }
 
-  }
+  
   render(){
     return (
       <div>
@@ -31,7 +38,8 @@ export class App extends React.Component{
             {/*<!-- Add a SearchResults component -->*/}
               <SearchResults searchResults ={this.state.searchResults} onAdd={this.addTrack} />
             {/*<!-- Add a Playlist component -->*/}
-              <Playlist playlistName={this.state.playlistName} playlistTracks={this.state.playlistTracks} />
+              <Playlist playlistName={this.state.playlistName}
+               playlistTracks={this.state.playlistTracks} onRemove={this.removeTrack} />
           </div>
         </div>
     </div>
