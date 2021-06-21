@@ -3,6 +3,7 @@ import React from 'react';
 import {SearchBar} from '../SearchBar/SearchBar.js';
 import {SearchResults} from '../SearchResults/SearchResults.js';
 import {Playlist} from '../Playlist/Playlist.js';
+import {Spotify} from '../../util/Spotify.js';
 
 export class App extends React.Component{
   constructor(props){
@@ -17,6 +18,7 @@ export class App extends React.Component{
     this.updatePlaylistName=this.updatePlaylistName.bind(this);
     this.savePlaylist=this.savePlaylist.bind(this);
     this.search=this.search.bind(this);
+    this.searchResults=this.searchResults.bind(this);
   }
   addTrack(track){
     if (this.state.playlistTracks.find(savedTrack => savedTrack.id===track.id)){
@@ -37,7 +39,11 @@ export class App extends React.Component{
     }
     search(searchTerm){
       console.log(searchTerm);
+      Spotify.search(searchTerm); //maybe i need to write this.Spotify.search
       this.setState({searchTerm:searchTerm});
+    }
+    searchResults(){
+      this.setState({searchResults:Spotify.search()}); //maybe I need to write this.Spotify.search
     }
 
   
