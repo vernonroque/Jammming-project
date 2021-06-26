@@ -8,9 +8,9 @@ import {Spotify} from '../../util/Spotify.js';
 export class App extends React.Component{
   constructor(props){
     super(props);
-    this.state = {searchResults:[{name:'',artist:'',album:'',id:''}],
+    this.state = {searchResults:[],
                   playlistName:'',
-                  playlistTracks:[{name:'',artist:'',album:'',id:''}],
+                  playlistTracks:[],
                   searchTerm:''
                   };
     this.addTrack= this.addTrack.bind(this);
@@ -36,6 +36,9 @@ export class App extends React.Component{
     }
     savePlaylist(){
       const trackURIs =this.state.playlistTracks.map(track=>track.uri);
+      Spotify.savePlaylist(this.state.playlistName,trackURIs);
+      this.setState({playlistName:'New Playlist'});
+      this.setState({playlistTracks:[]});
     }
     search(searchTerm){
       console.log(searchTerm);
@@ -43,7 +46,7 @@ export class App extends React.Component{
       this.setState({searchTerm:searchTerm});
     }
     searchResults(){
-      this.setState({searchResults:Spotify.search()}); //maybe I need to write this.Spotify.search
+      this.setState({searchResults:Spotify.search}); //maybe I need to write this.Spotify.search
     }
 
   

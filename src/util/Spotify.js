@@ -1,10 +1,9 @@
-import React from 'react';
 
 let accessToken='';
 const clientID='53d98329c41b4e2d9274aed2a2d37675';
 const redirectURI='http://localhost:3000/';
 
-export let Spotify = {
+export const Spotify = {
     getAccessToken(){
         if(accessToken){
             return accessToken;
@@ -55,17 +54,44 @@ export let Spotify = {
         let userId='';
         const urlToFetch= 'https://api.spotify.com/v1/me';
 
-        fetch(urlToFetch,header).then((response)=>{
-            if(response.ok){
-                return response.json();
-            }
-            throw new Error('Request Failed!');},
-            (networkError)=>{
-                console.log(networkError.message);
-            }).then(jsonResponse=>{
+        fetch(urlToFetch,header)
+            .then((response)=>{
+                if(response.ok){
+                    return response.json();
+                }
+                throw new Error('Request Failed!');},
+                (networkError)=>{
+                    console.log(networkError.message);
+                })
+            .then(jsonResponse=>{
                 userId=jsonResponse.id;
                 return userId;
-            });
+                });
+
+            const urlForPost = `https://api.spotify.com/v1/users/${userId}/playlists`; 
+            const name = playlistName;
+        
+        fetch(urlForPost,{
+            method:'POST',
+            headers: {
+                'Content-type': 'application/json'
+                },
+            body:name
+            })
+            .then(response =>{
+                if(response.ok){
+                    return response.json();
+                }
+                throw new Error('Request failed!');
+            },
+            networkError => console.log(networkError.message)
+            )
+            .then(jsonResponse=>{
+                const playlistID = jsonResponse.id;
+                return playlistID;
+            })
+
+        
 
     }
 }
