@@ -20,21 +20,21 @@ export class Track extends React.Component{
     }
     addTrack(){
         const newTrack = this.props.track;
-        this.props.onAdd(newTrack); //not sure if this is right
+        this.props.onAdd(newTrack);
     }
     removeTrack(){
         const removedTrack= this.props.track;
-        this.props.onRemove(removedTrack); //not sure if this is right
+        this.props.onRemove(removedTrack); 
     }
     render(){
         return(
             <div className="Track">
                 <div className="Track-information">
-                    <h3>{this.props.track.name}</h3>
+                    <h3>{this.props.track.name} </h3>
 
                     <p>{this.props.track.artist} | {this.props.track.album}</p>
                 </div>
-                <button className="Track-action">{this.renderAction}</button>
+                {this.renderAction()}
                 
             </div>
         );

@@ -18,7 +18,7 @@ export class App extends React.Component{
     this.updatePlaylistName=this.updatePlaylistName.bind(this);
     this.savePlaylist=this.savePlaylist.bind(this);
     this.search=this.search.bind(this);
-    this.searchResults=this.searchResults.bind(this);
+    //this.searchResults=this.searchResults.bind(this);
   }
   addTrack(track){
     if (this.state.playlistTracks.find(savedTrack => savedTrack.id===track.id)){
@@ -41,22 +41,20 @@ export class App extends React.Component{
       this.setState({playlistTracks:[]});
     }
     search(searchTerm){
-      console.log(searchTerm);
-      Spotify.search(searchTerm); //maybe i need to write this.Spotify.search
       this.setState({searchTerm:searchTerm});
+      Spotify.search(searchTerm)
+      .then(searchResults => this.setState({searchResults:searchResults}));
+      console.log('this is the search term: ' +searchTerm);
     }
-    searchResults(){
-      this.setState({searchResults:Spotify.search}); //maybe I need to write this.Spotify.search
-    }
-
   
   render(){
     return (
       <div>
         <h1>Ja<span className="highlight">mmm</span>ing</h1>
+        <h1>{this.state.searchTerm}</h1>
         <div className="App">
           {/*<!-- Add a SearchBar component -->*/}
-            <SearchBar onSearch={this.search} />
+            <SearchBar onSearch={this.search} searchTerm={this.state.searchTerm} />
           <div className="App-playlist">
             {/*<!-- Add a SearchResults component -->*/}
               <SearchResults searchResults ={this.state.searchResults} onAdd={this.addTrack} />

@@ -1,19 +1,24 @@
 
-let accessToken='';
+let accessToken;
 const clientID='53d98329c41b4e2d9274aed2a2d37675';
 const redirectURI='http://localhost:3000/';
 
 export const Spotify = {
     getAccessToken(){
+        const accessTokenMatch = window.location.href.match(/access_token=([^&]*)/);
+        const expiresInMatch = window.location.href.match(/expires_in=([^&]*)/);
+
         if(accessToken){
             return accessToken;
         }
-        else if(window.location.href.match(/access_token=([^&]*)/) 
-                && window.location.href.match(/expires_in=([^&]*)/)) {
-            accessToken = window.location.href.match(/access_token=([^&]*)/);
-            let expiresIn = window.location.href.match(/expires_in=([^&]*)/); 
+        else if(accessTokenMatch 
+                && expiresInMatch ) {
+            accessToken = accessTokenMatch[1];
+            
+            let expiresIn = Number(expiresInMatch[1]); 
             window.setTimeout(() => accessToken = '', expiresIn * 1000);
             window.history.pushState('Access Token', null, '/');
+            return accessToken;
                 }
 
         else if(!accessToken && !window.location.href.match(/access_token=([^&]*)/)){
@@ -21,26 +26,34 @@ export const Spotify = {
         }
     },
     search(searchTerm){
+        const passedAccessToken = Spotify.getAccessToken();
+        console.log('This is the passed access token:' + passedAccessToken);
+        console.log('this is the search term: ' + searchTerm)
         const endpoint = `https://api.spotify.com/v1/search?type=track&q=${searchTerm}`;
+        const header ={Authorization: `Bearer ${passedAccessToken}`};
+        console.log(header);
 
-        fetch(endpoint,{headers: {Authorization: `Bearer ${accessToken}`}}).then((response)=>{
-            if(response.ok){
+        return fetch(endpoint,
+            {headers: header}
+            )
+            .then(response=>{
+                if(response.ok){
                 return response.json();
-            }
-            throw new Error('Request Failed!');},
-            (networkError)=>{
-                console.log(networkError.message);
-            }).then(jsonResponse => {
-                if(!jsonResponse)
+                    }
+                throw new Error('Request Failed!');},
+                (networkError)=>{
+                    console.log(networkError.message);
+                })
+            .then(jsonResponse => {
+                if(!jsonResponse){
                     return [];
-                let tracksArray =jsonResponse.map((track)=>[
-                    {ID:track.id,
+                }
+                return jsonResponse.tracks.items.map((track)=>[
+                    {   id:track.id,
                         Name:track.name,
                         Artist:track.artists[0].name,
                         Album:track.album.name,
                         URI:track.uri}]);
-
-                    return tracksArray;
             });
     },
     savePlaylist(playlistName,trackURIArrays){
@@ -49,7 +62,7 @@ export const Spotify = {
         
         let usersAccessToken = accessToken;
         const header = {
-            Authorization:`Bearer ${usersAccessToken}` //not entirely sure
+            'Authorization':`Bearer ${usersAccessToken}` //not entirely sure
         };
         let userId='';
         const urlToFetch= 'https://api.spotify.com/v1/me';
