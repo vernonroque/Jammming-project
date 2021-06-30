@@ -3,7 +3,7 @@ let accessToken;
 const clientID='53d98329c41b4e2d9274aed2a2d37675';
 const redirectURI='http://localhost:3000/';
 
-export const Spotify = {
+const Spotify = {
     getAccessToken(){
         const accessTokenMatch = window.location.href.match(/access_token=([^&]*)/);
         const expiresInMatch = window.location.href.match(/expires_in=([^&]*)/);
@@ -31,7 +31,7 @@ export const Spotify = {
         console.log('this is the search term: ' + searchTerm)
         const endpoint = `https://api.spotify.com/v1/search?type=track&q=${searchTerm}`;
         const header ={Authorization: `Bearer ${passedAccessToken}`};
-        console.log(header);
+        //console.log(header);
 
         return fetch(endpoint,
             {headers: header}
@@ -48,12 +48,14 @@ export const Spotify = {
                 if(!jsonResponse){
                     return [];
                 }
-                return jsonResponse.tracks.items.map((track)=>[
+                return jsonResponse.tracks.items.map((track)=>(
                     {   id:track.id,
-                        Name:track.name,
-                        Artist:track.artists[0].name,
-                        Album:track.album.name,
-                        URI:track.uri}]);
+                        name:track.name,
+                        artist:track.artists[0].name,
+                        album:track.album.name,
+                        uri:track.uri
+                    }
+              ));
             });
     },
     savePlaylist(playlistName,trackURIArrays){
@@ -108,3 +110,4 @@ export const Spotify = {
 
     }
 }
+export default Spotify;
