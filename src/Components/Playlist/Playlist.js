@@ -8,8 +8,9 @@ export class Playlist extends React.Component{
         this.handleNameChange = this.handleNameChange.bind(this);
     }
     handleNameChange(event){
-        const playlistName = event.target.defaultValue;
-        this.setState({playlistName:playlistName});
+        const playlistName = event.target.value;
+        console.log("here is playlist name: " + playlistName);
+        this.props.onNameChange(playlistName);
     }
     render(){
         return(

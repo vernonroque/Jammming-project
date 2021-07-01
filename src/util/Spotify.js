@@ -31,7 +31,7 @@ const Spotify = {
         console.log('this is the search term: ' + searchTerm)
         const endpoint = `https://api.spotify.com/v1/search?type=track&q=${searchTerm}`;
         const header ={Authorization: `Bearer ${passedAccessToken}`};
-        //console.log(header);
+        console.log(header);
 
         return fetch(endpoint,
             {headers: header}
@@ -62,14 +62,13 @@ const Spotify = {
         if(!playlistName && !trackURIArrays)
             return [];
         
-        let usersAccessToken = accessToken;
-        const header = {
-            'Authorization':`Bearer ${usersAccessToken}` //not entirely sure
-        };
+        let usersAccessToken = Spotify.getAccessToken();
+        const header = {Authorization:`Bearer ${usersAccessToken}`}; //not entirely sure
+        console.log('access token to get request in save playlist: ' + header.Authorization);
         let userId='';
         const urlToFetch= 'https://api.spotify.com/v1/me';
 
-        fetch(urlToFetch,header)
+        return fetch(urlToFetch,{headers: header})
             .then((response)=>{
                 if(response.ok){
                     return response.json();
@@ -81,32 +80,60 @@ const Spotify = {
             .then(jsonResponse=>{
                 userId=jsonResponse.id;
                 return userId;
-                });
+                })
+            .then(userId =>{
+                const urlForPost = `https://api.spotify.com/v1/users/${userId}/playlists`; 
+                const name = playlistName;
+                console.log('access token to first POST request in save playlist: ' + header.Authorization);
 
-            const urlForPost = `https://api.spotify.com/v1/users/${userId}/playlists`; 
-            const name = playlistName;
-        
-        fetch(urlForPost,{
-            method:'POST',
-            headers: {
-                'Content-type': 'application/json'
-                },
-            body:name
-            })
-            .then(response =>{
-                if(response.ok){
-                    return response.json();
-                }
-                throw new Error('Request failed!');
-            },
-            networkError => console.log(networkError.message)
-            )
-            .then(jsonResponse=>{
-                const playlistID = jsonResponse.id;
-                return playlistID;
-            })
+                return fetch(urlForPost,{
+                    headers: header,
+                    method:'POST',
+                    body:JSON.stringify({name:name})
+                    })
+                    .then(response =>{
+                        if(response.ok){
+                            return response.json();
+                        }
+                        throw new Error('Request failed!');
+                    },
+                    networkError => console.log(networkError.message)
+                    )
+                    .then(jsonResponse=>{
+                        const playlistID = jsonResponse.id;
+                        return playlistID;
+                    })
 
-        
+            })
+            .then((playlistId) =>{
+                const urlForPost = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
+                const trackURIs = trackURIArrays;
+                console.log('access token to SECOND POST request in save playlist: ' + header.Authorization);
+
+                return fetch(urlForPost,{
+                    headers: header,
+                    method:'POST',
+                    body:JSON.stringify({uris:trackURIs})
+                    })
+                    .then(response =>{
+                        if(response.ok){
+                            return response.json();
+                        }
+                        throw new Error('Request failed!');
+                    },
+                    networkError => console.log(networkError.message)
+                    )
+                    .then(jsonResponse=>{
+                        const playlistID = jsonResponse.id;
+                        return playlistID;
+                    })
+
+
+
+
+            })
+ 
+
 
     }
 }
