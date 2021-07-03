@@ -1,7 +1,7 @@
 
 let accessToken;
 const clientID='53d98329c41b4e2d9274aed2a2d37675';
-const redirectURI='http://localhost:3000/';
+const redirectURI='http://jammming_app_project.surge.sh';
 
 const Spotify = {
     getAccessToken(){
