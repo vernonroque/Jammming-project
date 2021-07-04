@@ -32,7 +32,7 @@ export class Tracklist extends React.Component{
     <div className="TrackList">
     {/*<!-- You will add a map method that renders a set of Track components  -->*/}
             {this.props.tracks.map(track =>{
-                console.log(track.id);
+                console.log('This is the track preview url: ' + track.preview);
                 return <Track track={track} key={track.id} 
                     onAdd={this.props.onAdd} 
                     isRemoval={this.props.isRemoval} 
