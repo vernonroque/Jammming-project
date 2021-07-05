@@ -47,6 +47,9 @@ export class App extends React.Component{
       this.setState({playlistTracks:[]});  
           
     }
+    componentDidMount() {
+      window.addEventListener('load', () => { Spotify.getAccessToken() }); //this code is to avoid wepage skip
+  }
     search(searchTerm){
       //this.setState({searchTerm:searchTerm});
       Spotify.search(searchTerm).then(searchResults => this.setState({searchResults:searchResults}));

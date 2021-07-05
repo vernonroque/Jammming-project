@@ -1,8 +1,8 @@
 
 let accessToken;
 const clientID='53d98329c41b4e2d9274aed2a2d37675';
-//const redirectURI='http://jammming_app_project.surge.sh';
-const redirectURI='http://localhost:3000/';
+const redirectURI='http://jammming_app_project.surge.sh';
+//const redirectURI='http://localhost:3000/';
 
 const Spotify = {
     getAccessToken(){
@@ -14,6 +14,7 @@ const Spotify = {
         }
         else if(accessTokenMatch 
                 && expiresInMatch ) {
+            console.log("The saved access token: " + accessTokenMatch[1]);
             accessToken = accessTokenMatch[1];
             
             let expiresIn = Number(expiresInMatch[1]); 
